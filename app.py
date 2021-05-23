@@ -67,9 +67,11 @@ def stations():
     # Query all precipitation data
     results = session.query(station.name).group_by(station.name).all()
 
+    result_list = list(np.ravel(results))
+
     session.close()
     
-    return jsonify(results)
+    return jsonify(result_list)
 
 
 
