@@ -38,8 +38,8 @@ def welcome():
         f"/api/v1.0/precipitation<br/>"
         f"/api/v1.0/stations<br/>"
         f"/api/v1.0/tobs<br/>"
-        f"/api/v1.0/<start><br/>"
-        f"/api/v1.0/<start>/<end><br/>"
+        f"/api/v1.0/start<br/>"
+        f"/api/v1.0/start/end<br/>"
     )
 
 
@@ -72,6 +72,25 @@ def stations():
     session.close()
     
     return jsonify(result_list)
+
+@app.route("/api/v1.0/tobs")
+def tobs():
+    
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+    
+    """Return most active station"""
+    most_active_station = session.query(measurement.station, func.count(measurement.station)) \
+        .group_by(measurement.station) \
+        .order_by(func.count(measurement.station).desc()) \
+        .all()[0]
+    
+    """Return a list of all tobs data from most active"""
+    results = list(np.ravel(session.query(measurement.tobs).filter(measurement.station==most_active_station).all()))
+    
+    session.close()
+    
+    return jsonify(results)
 
 
 
