@@ -48,17 +48,14 @@ def precipitation():
     
     # Create our session (link) from Python to the DB
     session = Session(engine)
-    
+
     """Return a list of all precipitation data"""
     # Query all precipitation data
-    results = session.query(measurement.date, measurment.prcp).all()
+    results = dict(session.query(measurement.date, measurement.prcp).all())
 
     session.close()
-
-    # Convert list of tuples into normal list
-    all_results = list(np.ravel(results))
-
-    return jsonify(all_results)
+    
+    return jsonify(results)
 
 if __name__ == '__main__':
     app.run(debug=True)
