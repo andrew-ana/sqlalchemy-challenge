@@ -41,3 +41,24 @@ def welcome():
         f"/api/v1.0/<start><br/>"
         f"/api/v1.0/<start>/<end><br/>"
     )
+
+
+@app.route("/api/v1.0/precipitation")
+def precipitation():
+    
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+    
+    """Return a list of all precipitation data"""
+    # Query all precipitation data
+    results = session.query(measurement.date, measurment.prcp).all()
+
+    session.close()
+
+    # Convert list of tuples into normal list
+    all_results = list(np.ravel(results))
+
+    return jsonify(all_results)
+
+if __name__ == '__main__':
+    app.run(debug=True)
