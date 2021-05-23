@@ -92,6 +92,26 @@ def tobs():
     
     return jsonify(results)
 
+@app.route("/api/v1.0/start")
+def start():
+    
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+    
+    """Return most active station"""
+    most_active_station = session.query(measurement.station, func.count(measurement.station)) \
+        .group_by(measurement.station) \
+        .order_by(func.count(measurement.station).desc()) \
+        .all()[0][0]
+    
+    """Return a list of all tobs data from most active"""
+    results = list(np.ravel(session.query(measurement.tobs).filter(measurement.station==most_active_station).all()))
+    
+    session.close()
+    
+    return jsonify(results)
+
+
 
 
 if __name__ == '__main__':
