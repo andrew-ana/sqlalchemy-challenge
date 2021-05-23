@@ -49,13 +49,29 @@ def precipitation():
     # Create our session (link) from Python to the DB
     session = Session(engine)
 
-    """Return a list of all precipitation data"""
+    """Return a dict of all precipitation data"""
     # Query all precipitation data
     results = dict(session.query(measurement.date, measurement.prcp).all())
 
     session.close()
     
     return jsonify(results)
+
+@app.route("/api/v1.0/stations")
+def stations():
+    
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+
+    """Return a list of all stations"""
+    # Query all precipitation data
+    results = session.query(station.name).group_by(station.name).all()
+
+    session.close()
+    
+    return jsonify(results)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
