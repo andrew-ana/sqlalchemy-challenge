@@ -83,7 +83,7 @@ def tobs():
     most_active_station = session.query(measurement.station, func.count(measurement.station)) \
         .group_by(measurement.station) \
         .order_by(func.count(measurement.station).desc()) \
-        .all()[0]
+        .all()[0][0]
     
     """Return a list of all tobs data from most active"""
     results = list(np.ravel(session.query(measurement.tobs).filter(measurement.station==most_active_station).all()))
